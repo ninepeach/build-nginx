@@ -217,10 +217,11 @@ if [ -d "${install_path}/etc/nginx-${today}" ]; then
 fi
 
 # Create NGINX systemd service file if it does not already exist
-if [ ! -e "${install_path}/nginx.service" ]; then
+if [ ! -e "${install_path}/service/nginx.service" ]; then
   # Control will enter here if the NGINX service doesn't exist.
-  file="${install_path}/nginx.service"
+  file="${install_path}/service/nginx.service"
 
+  mkdir -p ${file}
   /bin/cat >$file <<'EOF'
 [Unit]
 Description=The NGINX HTTP and reverse proxy server
@@ -241,17 +242,18 @@ EOF
 fi
 
 # Create NGINX systemd service file if it does not already exist
-if [ ! -e "${install_path}/README" ]; then
+if [ ! -e "${install_path}/service/README" ]; then
   # Control will enter here if the NGINX service doesn't exist.
-  file="${install_path}/README"
+  file="${install_path}/service/README"
 
+  mkdir -p ${file}
   /bin/cat >$file <<'EOF'
 
 # Add NGINX group and user if they do not already exist
 id -g nginx &>/dev/null || addgroup --system nginx
 id -u nginx &>/dev/null || adduser --disabled-password --system --shell /sbin/nologin --group nginx
 
-cp /usr/local/nginx/nginx.service /lib/systemd/system/nginx.service
+cp /usr/local/nginx/service/nginx.service /lib/systemd/system/nginx.service
 systemctl start nginx.service
 EOF
 fi
